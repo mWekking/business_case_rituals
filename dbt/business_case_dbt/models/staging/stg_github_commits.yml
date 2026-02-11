@@ -1,0 +1,46 @@
+version: 2
+
+models:
+  - name: stg_github_commits
+    description: >-
+      Staging table for GitHub commits. Grain: 1 row per commit (repo_owner, repo_name, sha).
+    columns:
+      - name: repo_owner
+        description: Repository owner
+        tests:
+          - not_null
+
+      - name: repo_name
+        description: Repository name
+        tests:
+          - not_null
+
+      - name: sha
+        description: Commit SHA (stable primary key)
+        tests:
+          - not_null
+          - unique
+
+      - name: authored_at
+        description: Timestamp when the commit was authored
+
+      - name: author_name
+        description: Name of the commit author from the commit payload
+
+      - name: author_login
+        description: GitHub login of the commit author (null for unlinked commits)
+
+      - name: author_type
+        description: GitHub user type of the commit author (User, Bot, Organization)
+
+      - name: commit_message
+        description: Full commit message
+
+      - name: source_updated_at
+        description: Source update timestamp captured during extraction
+
+      - name: _extracted_at
+        description: Timestamp when the record was extracted
+
+      - name: raw_json
+        description: Full raw GitHub payload for the commit

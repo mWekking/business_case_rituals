@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: github_sys
+    schema: main
+    description: "Raw GitHub ingestion tables loaded by the Python extractor."
+    tables:
+      - name: sys_github_pull_requests
+        description: "Raw PR payloads. Grain: 1 row per PR."
+      - name: sys_github_issues
+        description: "Raw issue payloads (PRs excluded). Grain: 1 row per issue."
+      - name: sys_github_commits
+        description: "Raw commit payloads. Grain: 1 row per commit."

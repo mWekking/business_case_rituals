@@ -1,0 +1,82 @@
+version: 2
+
+models:
+  - name: stg_github_pull_requests
+    description: >-
+      Staging table for GitHub Pull Requests. Grain: 1 row per PR (repo_owner, repo_name, pr_id).
+    columns:
+      - name: repo_owner
+        description: Repository owner
+        tests:
+          - not_null
+
+      - name: repo_name
+        description: Repository name
+        tests:
+          - not_null
+
+      - name: pr_id
+        description: GitHub PR id (stable primary key)
+        tests:
+          - not_null
+          - unique
+
+      - name: pr_number
+        description: PR number shown in GitHub UI (not globally unique)
+
+      - name: pr_state
+        description: PR state from GitHub (open or closed)
+
+      - name: is_draft
+        description: Whether the PR is marked as draft
+
+      - name: title
+        description: PR title
+
+      - name: author_login
+        description: GitHub login of the PR author
+
+      - name: author_type
+        description: GitHub user type of the PR author (User, Bot, Organization)
+
+      - name: created_at
+        description: Timestamp when the PR was created
+
+      - name: updated_at
+        description: Timestamp when the PR was last updated
+
+      - name: closed_at
+        description: Timestamp when the PR was closed
+
+      - name: merged_at
+        description: Timestamp when the PR was merged
+
+      - name: merged_by_login
+        description: GitHub login of the user who merged the PR
+
+      - name: comments_count
+        description: Number of issue comments on the PR
+
+      - name: review_comments_count
+        description: Number of review comments on the PR
+
+      - name: commits_count
+        description: Number of commits in the PR
+
+      - name: additions
+        description: Lines added in the PR
+
+      - name: deletions
+        description: Lines deleted in the PR
+
+      - name: changed_files
+        description: Number of files changed in the PR
+
+      - name: source_updated_at
+        description: Source update timestamp captured during extraction
+
+      - name: _extracted_at
+        description: Timestamp when the record was extracted
+
+      - name: raw_json
+        description: Full raw GitHub payload for the PR
