@@ -1,8 +1,35 @@
+# Environment & secrets
 .env
+.env.*
 .venv/
+venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pytest_cache/
+.mypy_cache/
+
+# DuckDB / local data
 data/
+*.duckdb
+*.duckdb.wal
+
+# dbt artifacts
 target/
 dbt_packages/
 logs/
-.DS_Store
+dbt_modules/
+
+# IDE
 .vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+*.log
