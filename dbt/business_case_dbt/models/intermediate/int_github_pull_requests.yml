@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: stg_github_pull_requests
+  - name: int_github_pull_requests
     description: >-
       Staging table for GitHub Pull Requests. Grain: 1 row per PR (repo_owner, repo_name, pr_id).
     columns:
@@ -80,3 +80,17 @@ models:
 
       - name: raw_json
         description: Full raw GitHub payload for the PR
+
+      - name: body_length
+        description: The lenght of the body of the PR
+
+      - name: labels_used
+        description: The number of labels attached to the PR
+
+      - name: requested_reviewers
+        description: The number of reviewers requested
+
+      - name: emojis_used
+        description: The number of emojis used in a PR
+
+

@@ -10,7 +10,6 @@ with base as (
         pr_number,
 
         author_login,
-        merged_by_login,
 
         pr_state,
         is_draft,
@@ -26,7 +25,7 @@ with base as (
         comments_count,
         review_comments_count
 
-    from {{ ref('stg_github_pull_requests') }}
+    from {{ ref('int_github_pull_requests') }}
 
 )
 
@@ -37,7 +36,6 @@ select
     pr_number,
 
     author_login,
-    merged_by_login,
 
     pr_state,
     is_draft,

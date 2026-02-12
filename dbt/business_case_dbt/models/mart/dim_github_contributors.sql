@@ -16,16 +16,6 @@ with logins as (
     select distinct
         repo_owner,
         repo_name,
-        merged_by_login as contributor_login,
-        null as contributor_type
-    from {{ ref('stg_github_pull_requests') }}
-    where merged_by_login is not null
-
-    union all
-
-    select distinct
-        repo_owner,
-        repo_name,
         author_login as contributor_login,
         author_type as contributor_type
     from {{ ref('stg_github_issues') }}
