@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: dim_github_contributors
+    description: >
+      Dimension table containing contributors observed in pull requests, issues,
+      or commits. Grain: 1 row per contributor per repo
+      (repo_owner, repo_name, contributor_login).
+    columns:
+      - name: repo_owner
+        description: Repository owner
+        tests:
+          - not_null
+
+      - name: repo_name
+        description: Repository name
+        tests:
+          - not_null
+
+      - name: contributor_login
+        description: GitHub login of the contributor
+        tests:
+          - not_null
+
+      - name: contributor_type
+        description: GitHub user type (e.g. User, Organization, Bot)

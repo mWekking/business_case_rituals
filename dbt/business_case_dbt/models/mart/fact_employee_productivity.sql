@@ -14,7 +14,10 @@ with pr_rollup as (
         sum(requested_reviewers) as total_requested_reviewers,
         sum(body_length) as total_body_length,
         sum(number_of_labels) as total_labels,
-        sum(emojis_used) as total_emojis
+        sum(emojis_used) as total_emojis,
+        sum(checked_boxes_count) as total_checked_boxes,
+        sum(buzzwords_count) as total_buzzwords
+
 
     from {{ ref('int_github_pull_requests') }}
     where author_login is not null
@@ -54,6 +57,8 @@ select
         + p.total_requested_reviewers * 3
         + p.total_body_length * 0.01
         + p.total_labels * 5
+        + p.total_checked_boxes * 5
+        + p.total_buzzwords * 3
     ) as management_hero_score
 
 from pr_rollup p

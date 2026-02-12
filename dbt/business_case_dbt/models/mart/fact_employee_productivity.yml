@@ -1,0 +1,49 @@
+version: 2
+
+models:
+  - name: fct_github_author_productivity_from_hell
+    description: >
+      Satirical contributor productivity fact table built from PR and commit activity proxies.
+      Grain: 1 row per contributor per repo (repo_owner, repo_name, author_login).
+    columns:
+      - name: pk_employee_productivity
+        description: Surrogate key for (repo_owner, repo_name, author_login)
+        tests:
+          - not_null
+          - unique
+
+      - name: repo_owner
+        description: Repository owner
+        tests:
+          - not_null
+
+      - name: repo_name
+        description: Repository name
+        tests:
+          - not_null
+
+      - name: author_login
+        description: GitHub login of the contributor (PR author)
+        tests:
+          - not_null
+
+      - name: pr_count
+        description: Number of (non-draft) pull requests authored by this contributor
+
+      - name: total_commits
+        description: Total number of commits authored by this contributor (from stg_github_commits)
+
+      - name: total_requested_reviewers
+        description: Sum of requested reviewers across authored (non-draft) PRs (proxy for collaboration)
+
+      - name: total_body_length
+        description: Sum of PR body character length across authored (non-draft) PRs (proxy for documentation)
+
+      - name: total_labels
+        description: Sum of label counts across authored (non-draft) PRs (proxy for process compliance)
+
+      - name: total_emojis
+        description: Sum of emoji characters detected in PR bodies across authored (non-draft) PRs (proxy for communication excellence)
+
+      - name: management_hero_score
+        description: Composite satirical score derived from PR/commit volume and proxy signals

@@ -14,7 +14,9 @@ with
             {{ dbt_utils.generate_surrogate_key(['repo_owner', 'repo_name', 'pr_id']) }} as pk_pull_requests,
             *,
             length(pull_request_body) as body_length,
-            length(pull_request_body) - length(regexp_replace(pull_request_body,'[\x{1F300}-\x{1FAFF}]','')) as emojis_used
+            length(pull_request_body) - length(regexp_replace(pull_request_body,'[\x{1F300}-\x{1FAFF}]','')) as emojis_used,
+            array_length(regexp_extract_all(lower(pull_request_body), '(perf|performance|optimi|fix|refactor|security|breaking|blockchain|crypto)')) as buzzwords_count,
+            array_length(regexp_extract_all(pull_request_body, '- \[[xX]\]')) as checked_boxes_count
         from transform_pull_requests
     )
 select *

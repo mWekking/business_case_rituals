@@ -104,6 +104,14 @@ models:
         tests:
           - not_null
 
+      - name: buzzwords_count
+        description: >-
+          Count the number of buzzwords used.
+          Current words are: perf|performance|optimi|fix|refactor|security|breaking|blockchain|crypto
+
+      - name: checked_boxes_count
+        description: Looks for checked boxed in the PR body
+
       - name: source_updated_at
         description: Source-system updated timestamp for the record.
         tests:
