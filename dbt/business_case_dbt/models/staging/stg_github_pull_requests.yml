@@ -51,23 +51,14 @@ models:
       - name: merged_at
         description: Timestamp when the PR was merged
 
-      - name: comments_count
-        description: Number of issue comments on the PR
+      - name: requested_reviewers_count
+        description: The requested reviewers count
 
-      - name: review_comments_count
-        description: Number of review comments on the PR
-
-      - name: commits_count
-        description: Number of commits in the PR
-
-      - name: additions
-        description: Lines added in the PR
-
-      - name: deletions
-        description: Lines deleted in the PR
-
-      - name: changed_files
-        description: Number of files changed in the PR
+      - name: pull_request_body
+        description: The body of the PR
+      
+      - name: number_of_labels
+        description: Number of labels attached to the PR
       
       - name: requested_reviewers_count
         description: Number of requested reviewers on the pull request
@@ -77,6 +68,3 @@ models:
 
       - name: _extracted_at
         description: Timestamp when the record was extracted
-
-      - name: raw_json
-        description: Full raw GitHub payload for the PR

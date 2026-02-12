@@ -3,94 +3,113 @@ version: 2
 models:
   - name: int_github_pull_requests
     description: >-
-      Staging table for GitHub Pull Requests. Grain: 1 row per PR (repo_owner, repo_name, pr_id).
+      Intermediate model for GitHub Pull Requests. Grain: 1 row per PR
+      (repo_owner, repo_name, pr_id).
     columns:
-      - name: repo_owner
-        description: Repository owner
-        tests:
-          - not_null
-
-      - name: repo_name
-        description: Repository name
-        tests:
-          - not_null
-
-      - name: pr_id
-        description: GitHub PR id (stable primary key)
+      - name: pk_pull_requests
+        description: a unique key generated from repo_owner, epo_name and pr_id
         tests:
           - not_null
           - unique
 
+      - name: repo_owner
+        description: Repository owner / organization.
+        tests:
+          - not_null
+
+      - name: repo_name
+        description: Repository name.
+        tests:
+          - not_null
+
+      - name: pr_id
+        description: GitHub Pull Request internal ID (unique within GitHub).
+        tests:
+          - not_null
+
       - name: pr_number
-        description: PR number shown in GitHub UI (not globally unique)
+        description: Pull Request number shown in the repo.
+        tests:
+          - not_null
 
       - name: pr_state
-        description: PR state from GitHub (open or closed)
+        description: Pull Request state (e.g. open, closed).
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["open", "closed"]
 
       - name: is_draft
-        description: Whether the PR is marked as draft
+        description: Whether the PR is a draft.
+        tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
 
       - name: title
-        description: PR title
+        description: Pull Request title.
+        tests:
+          - not_null
 
       - name: author_login
-        description: GitHub login of the PR author
+        description: GitHub login of the PR author.
+        tests:
+          - not_null
 
       - name: author_type
-        description: GitHub user type of the PR author (User, Bot, Organization)
+        description: GitHub author type (e.g. User, Bot, Organization).
+        tests:
+          - not_null
 
       - name: created_at
-        description: Timestamp when the PR was created
+        description: Timestamp when the PR was created.
+        tests:
+          - not_null
 
       - name: updated_at
-        description: Timestamp when the PR was last updated
+        description: Timestamp when the PR was last updated.
 
       - name: closed_at
-        description: Timestamp when the PR was closed
+        description: Timestamp when the PR was closed (null if not closed).
 
       - name: merged_at
-        description: Timestamp when the PR was merged
+        description: Timestamp when the PR was merged (null if not merged).
 
-      - name: comments_count
-        description: Number of issue comments on the PR
-
-      - name: review_comments_count
-        description: Number of review comments on the PR
-
-      - name: commits_count
-        description: Number of commits in the PR
-
-      - name: additions
-        description: Lines added in the PR
-
-      - name: deletions
-        description: Lines deleted in the PR
-
-      - name: changed_files
-        description: Number of files changed in the PR
-      
       - name: requested_reviewers_count
-        description: Number of requested reviewers on the pull request
-
-      - name: source_updated_at
-        description: Source update timestamp captured during extraction
-
-      - name: _extracted_at
-        description: Timestamp when the record was extracted
-
-      - name: raw_json
-        description: Full raw GitHub payload for the PR
-
-      - name: body_length
-        description: The lenght of the body of the PR
-
-      - name: labels_used
-        description: The number of labels attached to the PR
+        description: Count of requested reviewers on the PR.
+        tests:
+          - not_null
 
       - name: requested_reviewers
-        description: The number of reviewers requested
+        description: >-
+          Count of requested reviewers (duplicate of requested_reviewers_count if both exist).
+        tests:
+          - not_null
+
+      - name: number_of_labels
+        description: Count of labels on the PR.
+        tests:
+          - not_null
+
+      - name: pull_request_body
+        description: PR body text (markdown). Can be empty.
+
+      - name: body_length
+        description: Length of the PR body text (characters).
+        tests:
+          - not_null
 
       - name: emojis_used
-        description: The number of emojis used in a PR
+        description: Count of emojis detected/used in the PR body.
+        tests:
+          - not_null
 
+      - name: source_updated_at
+        description: Source-system updated timestamp for the record.
+        tests:
+          - not_null
 
+      - name: _extracted_at
+        description: Timestamp when the record was extracted/ingested.
+        tests:
+          - not_null

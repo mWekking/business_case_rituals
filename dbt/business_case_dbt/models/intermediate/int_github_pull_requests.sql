@@ -1,25 +1,21 @@
 with 
     pull_requests as ( select * from {{ ref('stg_github_pull_requests') }}),
 
+    transform_pull_requests as (
+        select * exclude(pull_request_body, requested_reviewers, number_of_labels),
+            coalesce(pull_request_body, '') as pull_request_body,
+            coalesce(requested_reviewers, 0) as requested_reviewers,
+            coalesce(number_of_labels, 0) as number_of_labels
+        from pull_requests
+    ),
+
     extended_pull_requests as (
         select 
+            {{ dbt_utils.generate_surrogate_key(['repo_owner', 'repo_name', 'pr_id']) }} as pk_pull_requests,
             *,
-            length(coalesce(json_extract_string(raw_json, '$.body'), '')) as body_length,
-            coalesce(json_array_length(json_extract(raw_json, '$.labels')), 0) as labels_used,
-            coalesce(
-                json_array_length(json_extract(raw_json, '$.requested_reviewers')),
-                0
-            ) as requested_reviewers,
-            length(coalesce(json_extract_string(raw_json, '$.body'), ''))
-                        -
-                        length(
-                            regexp_replace(
-                                coalesce(json_extract_string(raw_json, '$.body'), ''),
-                                '[\x{1F300}-\x{1FAFF}]',
-                                ''
-                            )
-                        ) as emojis_used
-        from pull_requests
+            length(pull_request_body) as body_length,
+            length(pull_request_body) - length(regexp_replace(pull_request_body,'[\x{1F300}-\x{1FAFF}]','')) as emojis_used
+        from transform_pull_requests
     )
 select *
 from extended_pull_requests

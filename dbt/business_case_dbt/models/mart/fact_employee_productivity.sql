@@ -13,7 +13,7 @@ with pr_rollup as (
         -- "collaboration" proxy (because real comment counts aren't reliably in the /pulls list payload)
         sum(requested_reviewers) as total_requested_reviewers,
         sum(body_length) as total_body_length,
-        sum(labels_used) as total_labels,
+        sum(number_of_labels) as total_labels,
         sum(emojis_used) as total_emojis
 
     from {{ ref('int_github_pull_requests') }}
@@ -35,6 +35,7 @@ commit_rollup as (
 )
 
 select
+    {{ dbt_utils.generate_surrogate_key(['p.repo_owner', 'p.repo_name', 'p.author_login']) }} as pk_employee_productivity,
     p.repo_owner,
     p.repo_name,
     p.author_login,

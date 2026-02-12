@@ -31,19 +31,23 @@ typed as (
         try_cast(json_extract_string(raw_json, '$.closed_at') as timestamp) as closed_at,
         try_cast(json_extract_string(raw_json, '$.merged_at') as timestamp) as merged_at,
 
-        try_cast(json_extract_string(raw_json, '$.comments') as integer) as comments_count,
-        try_cast(json_extract_string(raw_json, '$.review_comments') as integer) as review_comments_count,
-        try_cast(json_extract_string(raw_json, '$.commits') as integer) as commits_count,
-        try_cast(json_extract_string(raw_json, '$.additions') as integer) as additions,
-        try_cast(json_extract_string(raw_json, '$.deletions') as integer) as deletions,
-        try_cast(json_extract_string(raw_json, '$.changed_files') as integer) as changed_files,
-        coalesce(json_array_length(json_extract(raw_json, '$.requested_reviewers')),0) as requested_reviewers_count,
+        json_array_length(json_extract(raw_json, '$.requested_reviewers')) as requested_reviewers_count,
+        json_extract_string(raw_json, '$.body') as pull_request_body,
+        json_array_length(json_extract(raw_json, '$.labels')) as number_of_labels,
+        json_array_length(json_extract(raw_json, '$.requested_reviewers')) as requested_reviewers,
 
+        -- --For future addition:
+        -- try_cast(json_extract_string(raw_json, '$.comments') as integer) as comments_count, -- always null, Number of issue comments on the PR
+        -- try_cast(json_extract_string(raw_json, '$.review_comments') as integer) as review_comments_count, -- always null, Number of review comments on the PR
+        -- try_cast(json_extract_string(raw_json, '$.commits') as integer) as commits_count, -- always null, Number of commits in the PR
+        -- try_cast(json_extract_string(raw_json, '$.additions') as integer) as additions, -- always null, Lines added in the PR
+        -- try_cast(json_extract_string(raw_json, '$.deletions') as integer) as deletions, -- always null, Lines deleted in the PR
+        -- try_cast(json_extract_string(raw_json, '$.changed_files') as integer) as changed_files, --always null
 
         source_updated_at,
         _extracted_at,
 
-        raw_json
+        --raw_json
     from src
 )
 
