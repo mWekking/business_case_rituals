@@ -28,7 +28,6 @@ def isoformat(dt):
 
 def github_session(token):
     # Reuse a session so headers + connections are shared.
-    # Create a reusable GitHub client with auth + headers already attached.
     s = requests.Session()
     s.headers.update(
         {

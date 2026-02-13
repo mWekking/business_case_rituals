@@ -31,7 +31,7 @@ typed as (
         try_cast(json_extract_string(raw_json, '$.comments') as integer) as comments_count,
 
         source_updated_at,
-        _extracted_at,
+        _extracted_at
 
     from src
 )

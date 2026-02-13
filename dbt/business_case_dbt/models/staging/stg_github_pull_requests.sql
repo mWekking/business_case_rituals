@@ -37,7 +37,7 @@ typed as (
         json_array_length(json_extract(raw_json, '$.requested_reviewers')) as requested_reviewers,
 
         source_updated_at,
-        _extracted_at,
+        _extracted_at
 
     from src
 )

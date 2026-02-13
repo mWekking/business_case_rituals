@@ -52,17 +52,14 @@ models:
         description: Timestamp when the PR was merged
 
       - name: requested_reviewers_count
-        description: The requested reviewers count
+        description: Number of requested reviewers on the pull request
 
       - name: pull_request_body
         description: The body of the PR
       
       - name: number_of_labels
         description: Number of labels attached to the PR
-      
-      - name: requested_reviewers_count
-        description: Number of requested reviewers on the pull request
-
+        
       - name: source_updated_at
         description: Source update timestamp captured during extraction
 

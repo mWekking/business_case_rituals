@@ -26,8 +26,8 @@ typed as (
         json_extract_string(raw_json, '$.commit.message') as commit_message,
 
         source_updated_at,
-        _extracted_at,
-
+        _extracted_at
+        
     from src
 )
 
