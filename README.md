@@ -188,7 +188,9 @@ Compromises:
 For a typical run (e.g., `microsoft/vscode`, last 10 days), this pipeline enables:
 
 - A manager to find the most productive contributors `management_evaluation_score`
+    ![Architecture diagram](docs/images/top_five_employees.png)
 - Create a report using the generated facts and dimensions
+    ![Architecture diagram](docs/images/star_model.png)
 
 ## 5. Future Roadmap
 
