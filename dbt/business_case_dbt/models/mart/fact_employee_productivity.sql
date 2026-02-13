@@ -9,6 +9,8 @@ with pr_rollup as (
         author_login,
 
         count(distinct pr_id) as pr_count,
+        avg(cycle_time_hours) as average_cycle_time_hours,
+        sum(pr_merged_within_day_flag) as total_prs_merged_within_day,
 
         -- "collaboration" proxy (because real comment counts aren't reliably in the /pulls list payload)
         sum(requested_reviewers) as total_requested_reviewers,
@@ -44,6 +46,8 @@ select
     p.author_login,
 
     p.pr_count,
+    p.average_cycle_time_hours,
+    p.total_prs_merged_within_day,
     coalesce(c.total_commits, 0) as total_commits,
 
     p.total_requested_reviewers,
@@ -59,11 +63,15 @@ select
         + p.total_labels * 5
         + p.total_checked_boxes * 5
         + p.total_buzzwords * 3
-    ) as management_hero_score
+
+        -- reward speed because management loves it
+        + coalesce(p.total_prs_merged_within_day, 0) * 4
+        + coalesce(p.average_cycle_time_hours, 0) * (-0.5)
+    ) as management_evaluation_score
 
 from pr_rollup p
 left join commit_rollup c
   on p.repo_owner = c.repo_owner
  and p.repo_name  = c.repo_name
  and p.author_login = c.author_login
-order by management_hero_score desc
+order by management_evaluation_score desc

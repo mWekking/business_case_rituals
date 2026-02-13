@@ -30,6 +30,9 @@ models:
       - name: pr_count
         description: Number of (non-draft) pull requests authored by this contributor
 
+      - name: cycle_time_hours
+        description: Average PR cycle time in hours across authored (non-draft) PRs
+
       - name: total_commits
         description: Total number of commits authored by this contributor (from stg_github_commits)
 
@@ -45,5 +48,5 @@ models:
       - name: total_emojis
         description: Sum of emoji characters detected in PR bodies across authored (non-draft) PRs (proxy for communication excellence)
 
-      - name: management_hero_score
+      - name: management_evaluation_score
         description: Composite satirical score derived from PR/commit volume and proxy signals

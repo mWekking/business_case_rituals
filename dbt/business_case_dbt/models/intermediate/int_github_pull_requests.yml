@@ -121,3 +121,9 @@ models:
         description: Timestamp when the record was extracted/ingested.
         tests:
           - not_null
+
+      - name: cycle_time_hours
+        description: Hours from PR created_at to merged_at (null if not merged or draft)
+
+      - name: pr_merged_within_day_flag
+        description: A flag that indicates whether a pull request was merged within a day

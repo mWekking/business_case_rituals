@@ -28,7 +28,6 @@ typed as (
         source_updated_at,
         _extracted_at,
 
-        raw_json
     from src
 )
 

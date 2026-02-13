@@ -53,6 +53,3 @@ models:
 
       - name: _extracted_at
         description: Timestamp when the record was extracted
-
-      - name: raw_json
-        description: Full raw GitHub payload for the issue

@@ -18,12 +18,7 @@ with base as (
         merged_at,
         closed_at,
 
-        additions,
-        deletions,
-        changed_files,
-        commits_count,
-        comments_count,
-        review_comments_count
+        cycle_time_hours
 
     from {{ ref('int_github_pull_requests') }}
 
@@ -44,20 +39,7 @@ select
     merged_at,
     closed_at,
 
-    additions,
-    deletions,
-    changed_files,
-    commits_count,
-    comments_count,
-    review_comments_count,
+    cycle_time_hours
 
-    -- KPI-ready field
-    case
-        when created_at is not null
-         and merged_at is not null
-         and is_draft = false
-        then datediff('hour', created_at, merged_at)
-        else null
-    end as cycle_time_hours
 
 from base

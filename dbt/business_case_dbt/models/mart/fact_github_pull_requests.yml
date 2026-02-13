@@ -42,23 +42,5 @@ models:
       - name: closed_at
         description: Timestamp when the PR was closed
 
-      - name: additions
-        description: Lines added in the PR (may be null depending on source payload)
-
-      - name: deletions
-        description: Lines deleted in the PR (may be null depending on source payload)
-
-      - name: changed_files
-        description: Number of files changed in the PR (may be null depending on source payload)
-
-      - name: commits_count
-        description: Number of commits in the PR (may be null depending on source payload)
-
-      - name: comments_count
-        description: Number of issue comments on the PR (may be null depending on source payload)
-
-      - name: review_comments_count
-        description: Number of review comments on the PR (may be null depending on source payload)
-
       - name: cycle_time_hours
         description: Hours from PR created_at to merged_at (null if not merged or draft)
