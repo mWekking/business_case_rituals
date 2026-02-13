@@ -19,6 +19,7 @@ with
     extended_pull_requests as (
         select 
             {{ dbt_utils.generate_surrogate_key(['repo_owner', 'repo_name', 'pr_id']) }} as pk_pull_requests,
+            {{ dbt_utils.generate_surrogate_key(['repo_owner', 'repo_name', 'author_login']) }} as fk_contributor,
             *,
             length(pull_request_body) as body_length,
             length(pull_request_body) - length(regexp_replace(pull_request_body,'[\x{1F300}-\x{1FAFF}]','')) as emojis_used,
@@ -30,4 +31,3 @@ with
     )
 select *
 from extended_pull_requests
-

@@ -7,6 +7,12 @@ models:
       or commits. Grain: 1 row per contributor per repo
       (repo_owner, repo_name, contributor_login).
     columns:
+      - name: pk_contributor
+        description: Surrogate key for (repo_owner, repo_name, contributor_login)
+        tests:
+          - not_null
+          - unique
+
       - name: repo_owner
         description: Repository owner
         tests:

@@ -6,11 +6,20 @@ models:
       Satirical contributor productivity fact table built from PR and commit activity proxies.
       Grain: 1 row per contributor per repo (repo_owner, repo_name, author_login).
     columns:
-      - name: pk_employee_productivity
+      - name: pk_productivity
         description: Surrogate key for (repo_owner, repo_name, author_login)
         tests:
           - not_null
           - unique
+      
+      - name: fk_contributor
+        description: Surrogate key for (repo_owner, repo_name, contributor_login)
+        tests:
+          - not_null
+          - unique
+          - relationships:
+              to: ref('dim_github_contributors')
+              field: pk_contributor
 
       - name: repo_owner
         description: Repository owner

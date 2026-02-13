@@ -4,6 +4,8 @@
 with base as (
 
     select
+        pk_pull_requests,
+        fk_contributor,
         repo_owner,
         repo_name,
         pr_id,
@@ -25,6 +27,8 @@ with base as (
 )
 
 select
+    pk_pull_requests,
+    fk_contributor,
     repo_owner,
     repo_name,
     pr_id,

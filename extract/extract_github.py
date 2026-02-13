@@ -297,7 +297,7 @@ def main():
     p.add_argument("--owner", required=True)
     p.add_argument("--repo", required=True)
     p.add_argument("--db-path", default="data/adh.duckdb")
-    p.add_argument("--since-days", type=int, default=365)
+    p.add_argument("--since-days", type=int, default=1)
     args = p.parse_args()
 
     # Token must be provided via environment.

@@ -33,10 +33,11 @@ with logins as (
 )
 
 select
+    {{ dbt_utils.generate_surrogate_key(['repo_owner', 'repo_name', 'contributor_login']) }} as pk_contributor,
     repo_owner,
     repo_name,
     contributor_login,
     max(contributor_type) as contributor_type
 from logins
-group by 1,2,3
+group by 1,2,3,4
 

@@ -5,6 +5,20 @@ models:
     description: >-
       Fact table for GitHub pull requests. Grain: 1 row per PR (repo_owner, repo_name, pr_id).
     columns:
+      - name: pk_pull_requests
+        description: A unique key generated from repo_owner, repo_name, and pr_id
+        tests:
+          - not_null
+          - unique
+          
+      - name: fk_contributor
+        description: Surrogate key for (repo_owner, repo_name, contributor_login)
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_github_contributors')
+              field: pk_contributor
+
       - name: repo_owner
         description: Repository owner
         tests:

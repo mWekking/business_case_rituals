@@ -4,6 +4,7 @@
 with pr_rollup as (
 
     select
+        fk_contributor,
         repo_owner,
         repo_name,
         author_login,
@@ -24,7 +25,7 @@ with pr_rollup as (
     from {{ ref('int_github_pull_requests') }}
     where author_login is not null
       and is_draft = false
-    group by 1,2,3
+    group by 1,2,3,4
 ),
 
 commit_rollup as (
@@ -40,7 +41,8 @@ commit_rollup as (
 )
 
 select
-    {{ dbt_utils.generate_surrogate_key(['p.repo_owner', 'p.repo_name', 'p.author_login']) }} as pk_employee_productivity,
+    {{ dbt_utils.generate_surrogate_key(['p.repo_owner', 'p.repo_name', 'p.author_login']) }} as pk_productivity,
+    fk_contributor,
     p.repo_owner,
     p.repo_name,
     p.author_login,
@@ -74,4 +76,3 @@ left join commit_rollup c
   on p.repo_owner = c.repo_owner
  and p.repo_name  = c.repo_name
  and p.author_login = c.author_login
-order by management_evaluation_score desc
