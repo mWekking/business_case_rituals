@@ -1,4 +1,4 @@
--- models/marts/github/fct_github_author_productivity_from_hell.sql
+-- models/mart/fact_employee_productivity.sql
 -- Grain: 1 row per contributor per repo (repo_owner, repo_name, author_login)
 
 with pr_rollup as (

@@ -7,7 +7,7 @@ models:
       (repo_owner, repo_name, pr_id).
     columns:
       - name: pk_pull_requests
-        description: a unique key generated from repo_owner, epo_name and pr_id
+        description: A unique key generated from repo_owner, repo_name, and pr_id
         tests:
           - not_null
           - unique

@@ -1,4 +1,4 @@
--- models/marts/github/fct_github_pull_requests.sql
+-- models/mart/fact_github_pull_requests.sql
 -- Grain: 1 row per PR (repo_owner, repo_name, pr_id)
 
 with base as (

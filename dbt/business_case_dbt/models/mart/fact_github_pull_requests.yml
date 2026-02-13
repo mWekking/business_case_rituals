@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: fct_github_pull_requests
+  - name: fact_github_pull_requests
     description: >-
       Fact table for GitHub pull requests. Grain: 1 row per PR (repo_owner, repo_name, pr_id).
     columns:
