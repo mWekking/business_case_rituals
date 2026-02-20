@@ -200,7 +200,7 @@ def insert_issues(con, owner, repo, issues, extracted_at):
             _extracted_at     = EXCLUDED._extracted_at
         WHERE
             sys_github_issues.raw_json IS DISTINCT FROM EXCLUDED.raw_json
-            OR sys_github_issues.≈ IS DISTINCT FROM EXCLUDED.source_updated_at
+            OR sys_github_issues.source_updated_at IS DISTINCT FROM EXCLUDED.source_updated_at
         ;
         """,
         rows,
