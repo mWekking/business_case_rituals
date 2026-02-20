@@ -196,7 +196,7 @@ For a typical run (e.g., `microsoft/vscode`, last 10 days), this pipeline enable
 
 Planned enhancement for richer pull request metrics:
 
-- Add PR detail extraction via:
+### Add PR detail extraction via
 - `GET /repos/{owner}/{repo}/pulls/{pull_number}`
 - Docs: `https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28`
 
@@ -214,3 +214,41 @@ Fields to add once PR detail extraction is implemented:
 - `deletions` (lines deleted)
 - `changed_files` (number of changed files)
 
+### Make load incremental
+
+Why:
+- The current extractor uses a rolling `--since-days` window, which is partially incremental
+- Smaller reprocessing windows reduce API usage and rate limit pressure
+
+Approach:
+- Use `source_updated_at` as column/metadata per entity (PRs, issues, commits)
+- Store and query the latest `source_updated_at` already present in each `sys_*` table
+- Re-extract only records updated since that watermark, plus a small overlap window to handle late updates
+
+Implementation outline:
+1. For each entity table (`sys_github_pull_requests`, `sys_github_issues`, `sys_github_commits`), compute a cutoff:
+   - `cutoff = max(source_updated_at) - overlap_days`
+   - If table is empty: `cutoff = now() - default_lookback_days`
+
+2. Pass the cutoff into the GitHub API requests:
+   - Pull requests: fetch sorted by `updated` and stop once `updated_at < cutoff`
+   - Issues: fetch sorted by `updated` and stop once `updated_at < cutoff`
+   - Commits: use `since=cutoff` (supported by the commits endpoint)
+
+3. Upsert into DuckDB using the existing primary keys:
+   - PRs: `(repo_owner, repo_name, pr_id)`
+   - Issues: `(repo_owner, repo_name, issue_id)`
+   - Commits: `(repo_owner, repo_name, sha)`
+   - Update only when `raw_json` or `source_updated_at` changed; skip unchanged rows
+
+4. Keep `_extracted_at` as the timestamp of the last actual change written to the row.
+
+Key parameters:
+- `default_lookback_days`: initial backfill window when the table is empty (e.g. 30 or 365)
+- `overlap_days`: safety window to re-fetch recent history (e.g. 7–14 days)
+
+Benefits:
+- Faster extraction runs after the first load
+- Less API usage and fewer rate limit issues
+- Handles late edits (e.g. PR title/body edits, label changes, review requests)
+- Safe to re-run without duplicates (business-key idempotent with change-aware upserts)

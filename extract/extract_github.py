@@ -123,6 +123,9 @@ def commit_author_dt(commit_obj):
 
 
 def insert_pull_requests(con, owner, repo, prs, extracted_at):
+    # use ON CONFLICT DO UPDATE SET, to update records if they are allready in the sys layer
+    # if record allready in the sys layer it is put in the EXCLUDED 'table'
+    # check if the raw_json or source_updated_at is new, then update record else leave it
     # Store raw PR JSON with an insert on (owner, repo, id).
     if not prs:
         return 0
@@ -150,6 +153,9 @@ def insert_pull_requests(con, owner, repo, prs, extracted_at):
             source_updated_at = EXCLUDED.source_updated_at,
             raw_json          = EXCLUDED.raw_json,
             _extracted_at     = EXCLUDED._extracted_at
+        WHERE
+            sys_github_pull_requests.raw_json IS DISTINCT FROM EXCLUDED.raw_json
+            OR sys_github_pull_requests.source_updated_at IS DISTINCT FROM EXCLUDED.source_updated_at
         ;
         """,
         rows,
@@ -159,6 +165,9 @@ def insert_pull_requests(con, owner, repo, prs, extracted_at):
 
 
 def insert_issues(con, owner, repo, issues, extracted_at):
+    # use ON CONFLICT DO UPDATE SET, to update records if they are allready in the sys layer
+    # if record allready in the sys layer it is put in the EXCLUDED 'table'
+    # check if the raw_json or source_updated_at is new, then update record else leave it
     # Filter out PRs because the issues endpoint includes them.
     rows = []
     for issue in issues:
@@ -189,6 +198,9 @@ def insert_issues(con, owner, repo, issues, extracted_at):
             source_updated_at = EXCLUDED.source_updated_at,
             raw_json          = EXCLUDED.raw_json,
             _extracted_at     = EXCLUDED._extracted_at
+        WHERE
+            sys_github_issues.raw_json IS DISTINCT FROM EXCLUDED.raw_json
+            OR sys_github_issues.≈ IS DISTINCT FROM EXCLUDED.source_updated_at
         ;
         """,
         rows,
@@ -198,7 +210,9 @@ def insert_issues(con, owner, repo, issues, extracted_at):
 
 
 def insert_commits(con, owner, repo, commits, extracted_at):
-    # Commits are keyed by SHA.
+    # use ON CONFLICT DO UPDATE SET, to update records if they are allready in the sys layer
+    # if record allready in the sys layer it is put in the EXCLUDED 'table'
+    # check if the raw_json or source_updated_at is new, then update record else leave it
     if not commits:
         return 0
 
@@ -224,6 +238,9 @@ def insert_commits(con, owner, repo, commits, extracted_at):
             source_updated_at = EXCLUDED.source_updated_at,
             raw_json          = EXCLUDED.raw_json,
             _extracted_at     = EXCLUDED._extracted_at
+        WHERE
+            sys_github_commits.raw_json IS DISTINCT FROM EXCLUDED.raw_json
+            OR sys_github_commits.source_updated_at IS DISTINCT FROM EXCLUDED.source_updated_at
         ;
         """,
         rows,
