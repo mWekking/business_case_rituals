@@ -45,6 +45,9 @@ models:
       - name: total_prs_merged_within_day
         description: Count of authored (non-draft) PRs merged within 24 hours
 
+      - name: total_weekend_prs
+        description: Count of authored (non-draft) PRs created on Saturday or Sunday
+
       - name: total_commits
         description: Total number of commits authored by this contributor (from stg_github_commits)
 

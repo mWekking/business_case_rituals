@@ -153,17 +153,24 @@ Contributor-level average over non-draft PRs.
 sum(pr_merged_within_day_flag)
 ```
 
+- `total_weekend_prs`:
+
+```sql
+sum(case when strftime(created_at, '%w') in ('0', '6') then 1 else 0 end)
+```
+
 - `management_evaluation_score`:
 
 ```sql
 (pr_count * 10)
 + (coalesce(total_commits, 0) * 2)
-+ (total_requested_reviewers * 3)
-+ (total_body_length * 0.01)
++ (total_requested_reviewers * -3)
++ (total_body_length * -0.01)
 + (total_labels * 5)
 + (total_checked_boxes * 5)
 + (total_buzzwords * 3)
 + (coalesce(total_prs_merged_within_day, 0) * 4)
++ (coalesce(total_weekend_prs, 0) * 6)
 + (coalesce(average_cycle_time_hours, 0) * -0.5)
 ```
 
