@@ -32,7 +32,7 @@ def github_session(token):
     s.headers.update(
         {
             "Accept": "application/vnd.github+json",
-            "User-Agent": "rituals-analytics-engineering-takehome",
+            "User-Agent": "rituals-business-case",
             "Authorization": f"Bearer {token}",
         }
     )
@@ -43,6 +43,7 @@ def parse_next_link(link_header):
     if not link_header:
         return None
 
+    
     parts = [p.strip() for p in link_header.split(",")]
     for p in parts:
         if 'rel="next"' in p:
@@ -102,14 +103,9 @@ def page_is_past_since(items, dt_getter, since_dt):
     return min(dts) < since_dt
 
 
-def pr_updated_dt(pr):
+def create_updated_dt(pr):
     # Convert GitHub timestamp string into a datetime.
     upd = pr.get("updated_at")
-    return datetime.fromisoformat(upd.replace("Z", "+00:00")) if upd else None
-
-
-def issue_updated_dt(issue):
-    upd = issue.get("updated_at")
     return datetime.fromisoformat(upd.replace("Z", "+00:00")) if upd else None
 
 
@@ -251,6 +247,8 @@ def insert_commits(con, owner, repo, commits, extracted_at):
 
 def extract_pull_requests(s, con, owner, repo, since_dt):
     # Page newest-first and stop once we go past our cutoff.
+    # doesnt support since flag
+    # endpoint: https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#list-pull-requests
     url = f"{GITHUB_API}/repos/{owner}/{repo}/pulls"
     params = {"state": "all", "sort": "updated", "direction": "desc", "per_page": 100, "page": 1}
 
@@ -260,14 +258,14 @@ def extract_pull_requests(s, con, owner, repo, since_dt):
     for items in paged_get(s, url, params, label="pulls"):
         keep = []
         for pr in items:
-            dt = pr_updated_dt(pr)
+            dt = create_updated_dt(pr)
             if dt and dt >= since_dt:
                 keep.append(pr)
 
         if keep:
             total += insert_pull_requests(con, owner, repo, keep, extracted_at)
 
-        if page_is_past_since(items, pr_updated_dt, since_dt):
+        if page_is_past_since(items, create_updated_dt, since_dt):
             break
 
     return total
@@ -275,6 +273,7 @@ def extract_pull_requests(s, con, owner, repo, since_dt):
 
 def extract_issues(s, con, owner, repo, since_dt):
     # Issues endpoint supports a since filter.
+    # endpoint: https://docs.github.com/en/rest/issues/issues?apiVersion=2022-11-28#list-repository-issues
     url = f"{GITHUB_API}/repos/{owner}/{repo}/issues"
     params = {
         "state": "all",
@@ -296,6 +295,7 @@ def extract_issues(s, con, owner, repo, since_dt):
 
 def extract_commits(s, con, owner, repo, since_dt):
     # Commits endpoint also supports since.
+    # endpoint: https://docs.github.com/en/rest/commits/commits?apiVersion=2022-11-28#list-commits
     url = f"{GITHUB_API}/repos/{owner}/{repo}/commits"
     params = {"per_page": 100, "page": 1, "since": isoformat(since_dt)}
 

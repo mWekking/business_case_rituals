@@ -56,6 +56,8 @@ select
     p.total_body_length,
     p.total_labels,
     p.total_emojis,
+    p.total_checked_boxes,
+    p.total_buzzwords,
 
     (
         p.pr_count * 10

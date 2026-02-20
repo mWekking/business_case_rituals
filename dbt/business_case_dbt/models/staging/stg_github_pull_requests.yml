@@ -59,6 +59,9 @@ models:
       
       - name: number_of_labels
         description: Number of labels attached to the PR
+
+      - name: requested_reviewers
+        description: Number of requested reviewers on the pull request
         
       - name: source_updated_at
         description: Source update timestamp captured during extraction
