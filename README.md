@@ -183,7 +183,6 @@ Design decisions and assumptions:
 - Use layered dbt modeling (`staging -> intermediate -> mart`) for readability and maintainability.
 - Use incremental extraction window (`--since-days`) to limit API load and run time.
 - Use PR list endpoints for broad coverage, accepting that detailed diff fields are often missing.
-- Define satirical productivity KPIs intentionally biased toward activity/throughput.
 
 Compromises:
 
@@ -197,10 +196,10 @@ For a typical run (e.g., `microsoft/vscode`, last 10 days), this pipeline enable
 
 - A manager to find the most productive contributors `management_evaluation_score`
     ![Architecture diagram](docs/images/top_five_employees.png)
+
+    
 - Create a report using the generated facts and dimensions
     ![Architecture diagram](docs/images/star_model_2.png)
-- Star model source-of-truth in DBML format:
-    - `docs/star_model.dbml`
 
 ## 5. Future Roadmap
 
