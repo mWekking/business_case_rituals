@@ -1,7 +1,7 @@
 # GitHub Analytics – dbt Project
 
 This repository contains a dbt project that models GitHub API data into analytics-ready tables.
-The project follows a layered architecture (staging → intermediate → mart) and produces KPI-ready models for contributor performance and pull request analytics.
+The project follows a layered architecture (staging → intermediate → mart) and produces KPI-ready models for contributor performance, pull request analytics, and issue analytics.
 
 ## Table of Contents
 
@@ -98,6 +98,7 @@ models/
 
   mart/
     fact_github_pull_requests.sql
+    fact_github_issues.sql
     fact_employee_productivity.sql
     dim_github_contributors.sql
 ```
@@ -141,7 +142,21 @@ models/
 - Primary key: (`repo_owner`, `repo_name`, `contributor_login`)
 - Union of contributors from pull requests, issues, and commits
 
-### 5. `fact_employee_productivity`
+### 5. `fact_github_issues`
+
+- Grain: 1 row per issue
+- Primary key: `pk_issues`
+- Foreign key: `fk_contributor` -> `dim_github_contributors.pk_contributor`
+- Includes:
+  - `issue_number`
+  - `issue_state`
+  - `title`
+  - `created_at`
+  - `updated_at`
+  - `closed_at`
+  - `comments_count`
+
+### 6. `fact_employee_productivity`
 
 - Grain: 1 row per contributor per repo
 - Primary key: `pk_productivity`
@@ -153,6 +168,7 @@ models/
 | Model | Grain | Primary Key |
 | --- | --- | --- |
 | `fact_github_pull_requests` | 1 PR | `pk_pull_requests` |
+| `fact_github_issues` | 1 issue | `pk_issues` |
 | `fact_employee_productivity` | 1 contributor per repo | `pk_productivity` |
 | `dim_github_contributors` | 1 contributor per repo | `pk_contributor` |
 
@@ -245,12 +261,13 @@ Weighted composite score:
 ```text
 (pr_count * 10)
 + (coalesce(total_commits, 0) * 2)
-+ (total_requested_reviewers * 3)
-+ (total_body_length * 0.01)
++ (total_requested_reviewers * -3)
++ (total_body_length * -0.01)
 + (total_labels * 5)
 + (total_checked_boxes * 5)
 + (total_buzzwords * 3)
 + (coalesce(total_prs_merged_within_day, 0) * 4)
++ (coalesce(total_weekend_prs, 0) * 6)
 + (coalesce(average_cycle_time_hours, 0) * -0.5)
 ```
 
@@ -268,6 +285,12 @@ Run only contributor KPI model:
 
 ```bash
 dbt run --select fact_employee_productivity
+```
+
+Run only issues fact model:
+
+```bash
+dbt run --select fact_github_issues
 ```
 
 ## Running the Extractor
@@ -311,3 +334,4 @@ Fields to add once PR detail extraction is implemented:
 
 - PR list endpoint does not provide detailed diff metrics (additions/deletions/commit counts) reliably.
 - DuckDB is single-writer; avoid concurrent sessions.
+- Star model diagram source is available at `docs/star_model.dbml`.

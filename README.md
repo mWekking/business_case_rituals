@@ -4,7 +4,7 @@ This repository implements an end-to-end GitHub analytics pipeline:
 
 - Extract raw GitHub API data to DuckDB
 - Transform raw data with dbt into analytics-ready models
-- Produce KPI outputs for pull request and contributor performance
+- Produce KPI outputs for pull request, issue, and contributor performance
 
 ## 1. The Pipeline
 
@@ -120,6 +120,7 @@ dbt build
 | Staging | `stg_github_commits` | 1 commit | (`repo_owner`, `repo_name`, `sha`) |
 | Intermediate | `int_github_pull_requests` | 1 PR | `pk_pull_requests` (surrogate key) |
 | Mart | `fact_github_pull_requests` | 1 PR | `pk_pull_requests` (surrogate key) |
+| Mart | `fact_github_issues` | 1 issue | `pk_issues` (surrogate key) |
 | Mart | `dim_github_contributors` | 1 contributor per repo | `pk_contributor` (surrogate key) |
 | Mart | `fact_employee_productivity` | 1 contributor per repo | `pk_productivity` (surrogate key) |
 
@@ -198,6 +199,8 @@ For a typical run (e.g., `microsoft/vscode`, last 10 days), this pipeline enable
     ![Architecture diagram](docs/images/top_five_employees.png)
 - Create a report using the generated facts and dimensions
     ![Architecture diagram](docs/images/star_model_2.png)
+- Star model source-of-truth in DBML format:
+    - `docs/star_model.dbml`
 
 ## 5. Future Roadmap
 
